@@ -38,24 +38,24 @@ def get_product_data(driver,listLinkofproduct):
 	detailsData = []
 	for link in tqdm(listLinkofproduct):
 	    driver.get(link)
-	    np = driver.find_element_by_xpath('//*[@id="section-main-product"]/div[2]/div[1]/div[1]/h1').text
-	    pp = driver.find_element_by_xpath('//*[@id="section-main-product"]/div[2]/div[2]/div/div[1]/div/span').text
-	    sp = driver.find_element_by_xpath('//*[@id="section-main-product"]/div[2]/div[3]').text
-	    rate = driver.find_element_by_xpath('//*[@id="section-ulasan-barang"]/div[2]/div/div[1]/div[1]/div[1]/div[1]/div/div/span').text
-	    cp = driver.find_element_by_xpath('//*[@id="section-informasi-barang"]/div[2]/div[1]/div').text
-	    spec = get_spec(driver.find_elements(By.XPATH, "//table[contains(@class,'c-information__table')]/*[name()=('tbody')]/*[name()=('tr')]"))
-	    prod_picture = get_picture(driver, driver.find_elements(By.XPATH, "//div[contains(@class,'c-product-gallery__thumbnails')]/*[name()=('div')]/*[name()=('div')]/*[name()=('picture')]/*[name()=('img')]"))
-	    storeP = driver.find_element_by_xpath('//*[@id="section-informasi-pelapak"]/div[2]/div/div[1]/div[1]/h3/a').text
-	    PlaceP = driver.find_element_by_xpath('//*[@id="section-informasi-pelapak"]/div[2]/div/div[1]/div[1]/a').text
-	    review = driver.find_element_by_xpath('//*[@id="section-ulasan-barang"]/div[2]/div/div[1]/div[1]/div[1]/div[2]/p').text
-	    soldP = driver.find_element_by_xpath('//*[@id="section-main-product"]/div[2]/div[1]/div[1]/div/span').text
-	    process = driver.find_element_by_xpath('//*[@id="section-informasi-pelapak"]/div[2]/div/div[2]/div[2]/h3').text
+	    product_name = driver.find_element_by_xpath('//*[@id="section-main-product"]/div[2]/div[1]/div[1]/h1').text
+	    product_price = driver.find_element_by_xpath('//*[@id="section-main-product"]/div[2]/div[2]/div/div[1]/div/span').text
+	    product_stock = driver.find_element_by_xpath('//*[@id="section-main-product"]/div[2]/div[3]').text
+	    product_rate = driver.find_element_by_xpath('//*[@id="section-ulasan-barang"]/div[2]/div/div[1]/div[1]/div[1]/div[1]/div/div/span').text
+	    product_condition = driver.find_element_by_xpath('//*[@id="section-informasi-barang"]/div[2]/div[1]/div').text
+	    product_specification = get_spec(driver.find_elements(By.XPATH, "//table[contains(@class,'c-information__table')]/*[name()=('tbody')]/*[name()=('tr')]"))
+	    product_picture = get_picture(driver, driver.find_elements(By.XPATH, "//div[contains(@class,'c-product-gallery__thumbnails')]/*[name()=('div')]/*[name()=('div')]/*[name()=('picture')]/*[name()=('img')]"))
+	    product_store = driver.find_element_by_xpath('//*[@id="section-informasi-pelapak"]/div[2]/div/div[1]/div[1]/h3/a').text
+	    store_location = driver.find_element_by_xpath('//*[@id="section-informasi-pelapak"]/div[2]/div/div[1]/div[1]/a').text
+	    product_review = driver.find_element_by_xpath('//*[@id="section-ulasan-barang"]/div[2]/div/div[1]/div[1]/div[1]/div[2]/p').text
+	    product_sold = driver.find_element_by_xpath('//*[@id="section-main-product"]/div[2]/div[1]/div[1]/div/span').text
+	    process_time = driver.find_element_by_xpath('//*[@id="section-informasi-pelapak"]/div[2]/div/div[2]/div[2]/h3').text
 	    storeFeedBScore = driver.find_element_by_xpath('//*[@id="section-informasi-pelapak"]/div[2]/div/div[2]/div[1]/div[1]/div/span').text
 	    listofitems = {
-	        'Product name':np,'Product price':pp,'Prod Review':review,
-	        'Product Rate': rate,'Product stock':sp,'Product condition':cp,
-	        'Product Picture':prod_picture,'Product Specs':spec,'sold':soldP,'Store Name':storeP, 
-	        'Store Location':PlaceP,'Process Time': process, 'Store Feedback Score': storeFeedBScore,
+	        'Product name':product_name,'Product price':product_price,'Product Review':product_review,
+	        'Product Rate': product_rate,'Product stock':product_stock,'Product condition':product_condition,
+	        'Product Picture':product_picture,'Product Specs':product_specification,'sold':product_sold,'Store Name':product_store, 
+	        'Store Location':store_location,'Process Time': process_time, 'Store Feedback Score': storeFeedBScore,
 	        'Product Link': link
 	    }
 	    detailsData.append(listofitems)
