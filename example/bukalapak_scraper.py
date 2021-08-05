@@ -36,8 +36,8 @@ def get_picture(driver, prod_picture):
 
 def get_product_data(driver,listLinkofproduct):
 	detailsData = []
-	for j in tqdm(listLinkofproduct):
-	    driver.get(j)
+	for link in tqdm(listLinkofproduct):
+	    driver.get(link)
 	    np = driver.find_element_by_xpath('//*[@id="section-main-product"]/div[2]/div[1]/div[1]/h1').text
 	    pp = driver.find_element_by_xpath('//*[@id="section-main-product"]/div[2]/div[2]/div/div[1]/div/span').text
 	    sp = driver.find_element_by_xpath('//*[@id="section-main-product"]/div[2]/div[3]').text
@@ -56,7 +56,7 @@ def get_product_data(driver,listLinkofproduct):
 	        'Product Rate': rate,'Product stock':sp,'Product condition':cp,
 	        'Product Picture':prod_picture,'Product Specs':spec,'sold':soldP,'Store Name':storeP, 
 	        'Store Location':PlaceP,'Process Time': process, 'Store Feedback Score': storeFeedBScore,
-	        'Product Link': j
+	        'Product Link': link
 	    }
 	    detailsData.append(listofitems)
 	    driver.implicitly_wait(10)
