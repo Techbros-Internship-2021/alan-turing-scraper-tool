@@ -13,16 +13,18 @@ import time
 def getFilter(driver):
     #official store
     driver.find_element(By.XPATH, "//div[contains(@name,'official')]").click()
-
+    time.sleep(1)
     # rating 4 keatas
     driver.find_element(By.XPATH, "//div[contains(@value,'4 Keatas')]").click()
+    time.sleep(1)
 
-    #lokasi
+    # lokasi
     driver.find_element(By.XPATH, "//a[contains(@class,'css-wz9tp9-unf-link en8iawh0')]").click()
-    driver.find_element(By.XPATH, "//span[contains(text(),'Reset')]").click()
-    lokasi = input("lokasi mana?")
+    # driver.find_element(By.XPATH, "//span[contains(text(),'Reset')]").click()
+    lokasi = input("lokasi mana?: ")
     driver.find_element(By.XPATH, "//div[contains(@value,'{}')]".format(lokasi)).click()
     driver.find_element(By.XPATH, "//span[contains(text(),'Terapkan')]").click()
+    time.sleep(1)
 
 
 def popUpHandler(driver):
@@ -84,13 +86,14 @@ def contentScrapper(driver,listOfLink):
         productStore = productStore = driver.find_element_by_xpath("//*//div/a/h2").text
         productCondition = driver.find_element_by_xpath("//ul[@data-testid='lblPDPInfoProduk']/li[1]/span[2]").text
         storeRating = driver.find_element_by_xpath("//div[@class='css-1w2cnd1']/div[1]/div[1]").text
-    #         storeLocation
-    #         processTime
-    #         storeLink
+        storeLocation = driver.find_element_by_xpath("//div[@class='css-1le9c0d pad-bottom']/div[1]").text
+        processTime = driver.find_element_by_xpath("//div[@data-testid='lblPDPShopPackSecond']/div[1]/span[1]").text
+        storeLink = link
         productDetails = {"Product Name" : productName, "Product Price" :productPrice, "Product Rate" : productRate,
                         "Product Review" : productReview, "Product Sold": productSold, "Product Stock" : producStock,
                         "Product Condition" :productCondition, "Product Store": productStore, "Store Rating": storeRating,
-                        "Product Image": productImage}
+                        "Product Image": productImage, "Store Location" : storeLocation, "Process Time": processTime, 
+                        "Store Link":storeLink}
         ListOfdetails.append(productDetails)
     return ListOfdetails
 
@@ -104,16 +107,18 @@ def initiate():
     driver.maximize_window()
     driver.get("https://www.tokopedia.com/")
     time.sleep(3)
-    product = input("Keyword")
+    product = input("Keyword: ")
     driver.find_element(By.XPATH, "//input[contains(@class,'css-ubsgp5 e16vycsw0')]").send_keys(product)
     driver.find_element(By.XPATH, "//button[contains(@class,'css-1czin5k e1v0ehno1')]").click()
     time.sleep(1)
     popUpHandler(driver)
     scrolling(driver)
     popUpHandler(driver)
+    time.sleep(1)
+    getFilter(driver)
     listOfLink = getListOfLink(driver)
     results = contentScrapper(driver,listOfLink=listOfLink)
     results_df = pd.DataFrame(results)
-    results_df.to_csv(r"C:\Users\Daffa Barin\tokopediaDataScrapper.csv", index=False)
+    results_df.to_csv(r"C:\Users\Daffa Barin\MAGANG\Techbros\tokopediaDataScrapper.csv", index=False)
 
 initiate()
