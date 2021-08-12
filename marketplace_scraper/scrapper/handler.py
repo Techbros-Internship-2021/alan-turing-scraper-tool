@@ -96,8 +96,6 @@ def _bukalapak_handler(driver, **query):
         product_page = element.find("p", class_ = "bl-text bl-text--body-small bl-text--ellipsis__2").a.get('href')
         store_page = element.find("span", class_ = "bl-product-card__store bl-text bl-text--body-small bl-text--subdued bl-text--ellipsis__1").a.get('href')
         product_page_link.append(product_page),store_page_link.append(store_page)
-
-    print(product_page_link)
         
     for product_link, store_link in tqdm(zip(product_page_link,store_page_link)):
         driver.get(product_link)
@@ -143,7 +141,6 @@ def _bukalapak_handler(driver, **query):
         product_specs.append(product_spec)
 
         driver.implicitly_wait(1.5)
-
         
         driver.get(store_link)
         store_links.append(store_link)
