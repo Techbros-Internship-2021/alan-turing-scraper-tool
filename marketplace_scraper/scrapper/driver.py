@@ -4,7 +4,8 @@
 # Proprietary and confidential.
 #
 # Written by:
-# - Your Name <your email>
+# - Ridhwan Nashir <ridhwanashir@gmail.com>
+# - Your name <your email>
 # =========================================================================
 
 from selenium import webdriver
@@ -18,6 +19,7 @@ def _get_chrome_option():
         f'user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.79 Safari/537.36'
         )
     chrome_options.add_argument('--disable-dev-shm-usage')
+    chrome_options.add_argument('--disable-blink-features=AutomationControlled')
     return chrome_options
 
 
