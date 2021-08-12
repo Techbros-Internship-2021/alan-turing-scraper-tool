@@ -86,11 +86,8 @@ def _bukalapak_handler(driver, **query):
     driver.get(url)
     time.sleep(2)
 
-    for i in range(10):
-        driver.execute_script("window.scrollTo({top:document.body.scrollHeight,behavior: 'smooth'});")
-        time.sleep(0.15)
-    driver.execute_script("window.scrollTo({top: 0,behavior: 'smooth'});")
-    time.sleep(0.15)
+    #scrolling through the website
+    scrolling(driver)
 
     soup = BeautifulSoup(driver.page_source, "html.parser")
     data = soup.find_all('div',{'class':'bl-product-card te-product-card'})
