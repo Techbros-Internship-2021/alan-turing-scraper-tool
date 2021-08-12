@@ -11,7 +11,6 @@ import time
 import math
 import re
 import pandas as pd
-
 from bs4 import BeautifulSoup
 from tqdm import tqdm
 
@@ -20,6 +19,14 @@ SCROLL_RATE = math.sqrt(2)
 SCROLL_PAUSE_TIME = 1.25
 
 # EXAMPLE
+def scrolling(driver):
+    for i in reversed(range(10)):
+        driver.execute_script("window.scrollTo({top:document.body.scrollHeight,behavior: 'smooth'});")
+        time.sleep(0.15)
+    driver.execute_script("window.scrollTo({top: 0,behavior: 'smooth'});")
+    time.sleep(0.15)
+    
+
 def _blibli_handler(driver, **query):
     url = "https://siplah.blibli.com/search?keyword={}&itemPerPage=40&page=0".format(query['product'])
     driver.get(url)
@@ -198,17 +205,57 @@ def _shopee_handler(driver, **query):
     return result
 
 def _tokopedia_handler(driver, **query):
+    #get query from front-end
+    url = "https://www.tokopedia.com/search?st=product&q={}".format(query['product'])
+    driver.get(url)
+    time.sleep(2)
     
-    # your scraping process
-    # each marketplace should return same data
+    #scrolling through the website
+    scrolling(driver)
 
-    product_data = {
-        'name' : product_name, 
-        'price' : product_price,
-        'location' : product_location,
-        'merchant' : product_merchant, 
-        'link' : product_link,
-        }
-    result = pd.DataFrame.from_dict(product_data)
+    soup = BeautifulSoup(driver.page_source, "html.parser")
+    data = soup.find_all('div',{'class':'css-7fmtuv'})
+    productsLinks = []
+    for element in data:
+        productsLinks.append(element.a.get('href'))
+    productsLinks = [x for x in productsLinks if not x.startswith("https://ta.tokopedia.com/")]
 
+    result = []
+    for link in tqdm(productsLinks[:10]):
+        driver.get(link)
+        time.sleep(1)
+        scrolling(driver)
+        soup = BeautifulSoup(driver.page_source, "html.parser")
+
+        # Product
+        productName = soup.find("h1", class_ = "css-1wtrxts").text
+        productRating = soup.find_all("span", class_ = "main")[1].text
+        productNumReview = int(soup.find("span", attrs={"data-testid":"lblPDPDetailProductRatingCounter"}).text[1:3]) if soup.find("span", attrs={"data-testid":"lblPDPDetailProductRatingCounter"}) else 0
+        productNumSold = int(soup.find("div", attrs={"data-testid":"lblPDPDetailProductSoldCounter"}).text.replace("Terjual ",'')) if soup.find("div", attrs={"data-testid":"lblPDPDetailProductSoldCounter"}) else 0
+        productPrice = int(soup.find("div", class_ = "price").text.replace("Terjual ",'')[2:].replace('.','')) if soup.find("div",class_ = "price") else 0
+        productCategory = soup.find("ul", class_ = "css-1ijyj3z e1iszlzh2").find_all("li",class_ ="css-1dmo88g")[2].text[10:] if soup.find("ul", class_ = "css-1ijyj3z e1iszlzh2") else soup.find_all("li", class_ ="css-1dmo88g")[3].text[10:]
+        productSpecs = soup.find("span", class_ = "css-17zm3l e1iszlzh1").text
+        productPicture = soup.find("div", class_ = "css-19i5z4j").img.get('src')
+
+        # Store
+        storeName = soup.find("a", class_ = "css-1n8curp").text
+        storeRating = float(soup.find("div", class_ = "css-1rktnzx").text.replace("rata-rata ulasan","")) if soup.find("div", class_ = "css-1rktnzx") else 0
+        #go to store page
+        storeLink = "https://tokopedia.com{}".format(soup.find("a", class_ = "css-1n8curp").get("href"))
+        driver.get(storeLink)
+        time.sleep(3)
+        soup = BeautifulSoup(driver.page_source, "html.parser")
+        time.sleep(1)
+        storeResponseDuration = soup.find("p", class_ = "css-larfgg-unf-heading-unf-heading e1qvo2ff8").text[10:]
+        storeLocation = soup.find_all("p", class_ = "css-larfgg-unf-heading-unf-heading e1qvo2ff8")[1].text
+        storeFollowers = soup.find("h6", class_ = "css-1xrfbuw-unf-heading-unf-heading e1qvo2ff6").text.replace(" Followers","")
+
+        datum = {
+                    'Product name':productName,'Product price':productPrice,'Product rating':productRating,
+                    'Product review/s':productNumReview, 'Product sold':productNumSold,'Product category':productCategory,
+                    'Product picture':productPicture,'Product specification':productSpecs,'Product Link':"linklinklink",
+                    'Store Name':storeName,'Store Location':storeLocation,'Store rating':storeRating,'Store Response duration':storeResponseDuration,
+                    'Store Followers':storeFollowers,'Store Link':storeLink
+                }
+        result.append(datum)
     return result
