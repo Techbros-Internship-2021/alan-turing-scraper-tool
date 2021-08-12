@@ -96,8 +96,6 @@ def _bukalapak_handler(driver, **query):
         product_page = element.find("p", class_ = "bl-text bl-text--body-small bl-text--ellipsis__2").a.get('href')
         store_page = element.find("span", class_ = "bl-product-card__store bl-text bl-text--body-small bl-text--subdued bl-text--ellipsis__1").a.get('href')
         product_page_link.append(product_page),store_page_link.append(store_page)
-
-    print(product_page_link)
         
     for product_link, store_link in tqdm(zip(product_page_link,store_page_link)):
         driver.get(product_link)
@@ -143,7 +141,6 @@ def _bukalapak_handler(driver, **query):
         product_specs.append(product_spec)
 
         driver.implicitly_wait(1.5)
-
         
         driver.get(store_link)
         store_links.append(store_link)
@@ -156,7 +153,7 @@ def _bukalapak_handler(driver, **query):
         store_location = soup.find("div", class_ = "u-display-block u-mrgn-bottom--2 u-fg--ash-dark u-txt--small").a.text[11:-9]
         store_locations.append(store_location)
 
-        store_rate = (int(soup.find("table", class_ = "c-table c-table--equal c-table--tight").findAll(lambda tag: tag.name=='td')[1].text[:-6])*5)/100
+        store_rate = float((int(soup.find("table", class_ = "c-table c-table--equal c-table--tight").findAll(lambda tag: tag.name=='td')[1].text[:-6])*5)/100)
         store_rates.append(store_rate)
         
         store_response_duration = soup.find("table", class_ = "c-table c-table--equal c-table--tight").findAll(lambda tag: tag.name=='td')[9].text
