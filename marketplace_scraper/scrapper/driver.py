@@ -4,8 +4,10 @@
 # Proprietary and confidential.
 #
 # Written by:
+# - Okta Fajar Suryani <okta.suryani@techbros.io>
+# - Daffa Barin <daffabarin@gmail.com>
 # - Ridhwan Nashir <ridhwanashir@gmail.com>
-# - Your name <your email>
+# - Jonas <guterres19dedeus@gmail.com>
 # =========================================================================
 
 from selenium import webdriver
@@ -24,5 +26,7 @@ def _get_chrome_option():
 
 
 def _get_driver():
-    driver = webdriver.Chrome('chromedriver', options=_get_chrome_option())
+    # driver = webdriver.Chrome('chromedriver', options=_get_chrome_option())
+    driver = webdriver.Chrome()
+    return driver
 

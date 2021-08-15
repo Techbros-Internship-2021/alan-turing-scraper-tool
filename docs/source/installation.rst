@@ -1,7 +1,7 @@
 Installation
 ============
 
-Install SIPLah Analytics
+Install Turing Marketplace Scraper
 ------------------------
 
 To install the package simply::
@@ -14,4 +14,4 @@ Check Installation
 
 Once the installation done, please check if the package was installed::
 
-    siplah_analytics version
+    marketplace_scraper version

@@ -4,80 +4,27 @@
 # Proprietary and confidential.
 #
 # Written by:
-# - Your Name <your email>
+# - Okta Fajar Suryani <okta.suryani@techbros.io>
+# - Daffa Barin <daffabarin@gmail.com>
+# - Ridhwan Nashir <ridhwanashir@gmail.com>
+# - Jonas <guterres19dedeus@gmail.com>
 # =========================================================================
 
 import time
-import math
-import re
 import pandas as pd
 from bs4 import BeautifulSoup
 from tqdm import tqdm
-
-
-SCROLL_RATE = math.sqrt(2)
-SCROLL_PAUSE_TIME = 1.25
+from marketplace_scraper.scrapper.factory import shopeeUtilities, linkFactory
 
 # EXAMPLE
 def scrolling(driver):
     for i in reversed(range(10)):
         driver.execute_script("window.scrollTo({top:document.body.scrollHeight,behavior: 'smooth'});")
-        time.sleep(0.15)
-    driver.execute_script("window.scrollTo({top: 0,behavior: 'smooth'});")
-    time.sleep(0.15)
-    
-
-def _blibli_handler(driver, **query):
-    url = "https://siplah.blibli.com/search?keyword={}&itemPerPage=40&page=0".format(query['product'])
-    driver.get(url)
+        time.sleep(1)
     time.sleep(2)
-
-    soup = BeautifulSoup(driver.page_source, "html.parser")
-    data = soup.find_all('button',{'class':'pagination-button'})
-    maximum_page = 1
-    for element in data:
-        if element.findChild('span') is not None:
-            temp = int(element.findChild('span').text)
-            maximum_page = temp if maximum_page < temp else maximum_page
-
-    product_link = list()
-    product_name = list()
-    product_price = list()
-    product_location = list()
-    product_merchant = list()
-    for page in tqdm(range(maximum_page), desc ="Scrapper Progress"):
-        driver.get("https://siplah.blibli.com/search?keyword={query}&itemPerPage=40&page={page}".format(query=query['product'], page=page))
-        time.sleep(2)
-
-        data = soup.find_all('a',{'id':'prd-list[0]'})
-        for element in data:
-            link = 'https://siplah.blibli.com' + element['href']
-            product_link.append(link)
-
-            name = str(element.findChild('h3').text).replace('\n', '')[6:-4]
-            product_name.append(name)
-
-            price = int(str(element.find_all('p', {'class': 'product-price'})[0].text).replace('\n', '')[9:-4].replace('.', ''))
-            product_price.append(price)
-
-            location = str(element.find_all('p', {'class': 'product-icon'})[0].text).replace('\n', '')[6:-4]
-            product_location.append(location)
-            
-            merchant = str(element.find_all('p', {'class': 'product-merchant-name'})[0].text).replace('\n', '')[6:-4]
-            product_merchant.append(merchant)
-
-    product_data = {
-        'name' : product_name, 
-        'price' : product_price,
-        'location' : product_location,
-        'merchant' : product_merchant, 
-        'link' : product_link,
-        }
-    result = pd.DataFrame.from_dict(product_data)
-    print()
-
-    return result
-
+    
+def _blibli_handler(driver, **query):
+    pass
 
 def _bukalapak_handler(driver, **query):
 
@@ -184,21 +131,100 @@ def _bukalapak_handler(driver, **query):
     return result
 
 
-def _shopee_handler(driver, **query):
+def _shopee_handler(driver,  **query):
 
-    # your scraping process
-    # each marketplace should return same data
+    defined_query = query
+    link_factory = linkFactory(defined_query)
+    print('[INFO] creating url from user query ...')
+    url_ref = link_factory._shopee_link_factory()
+    print('[INFO] url_ref:', url_ref)
+    driver.get(f'{url_ref}')
+    scrolling(driver)
+    print('[INFO] In search page ...')
+    time.sleep(3)
+    soup = BeautifulSoup(driver.page_source, "html.parser")
+
+    link_each_product_list = list()
+    product_name_list = list()
+    product_rating_list = list()
+    product_num_review_list = list()
+    product_num_sold_list = list()
+    product_price_list = list()
+    product_spec_list = list()
+    product_category_list = list()
+    product_images_link_list = list()
+    store_name_list = list()
+    store_response_duration_list = list()
+    store_location_list = list()
+    store_follower_list = list()
+    store_rating_list = list()
+
+    item_element_div = soup.find_all('div',{'class':'col-xs-2-4 shopee-search-item-result__item'})
+    print('[INFO] len(item_element_div):', len(item_element_div))
+    for item_element in item_element_div:
+        link_product_div = item_element.find_all('a', {'data-sqe': 'link'})
+        print('[INFO] len(link product div):', len(link_product_div))
+        if len(link_product_div) > 0:
+            for each_link in link_product_div:
+                link_each_product = 'https://shopee.co.id'+each_link.get('href')
+            print('[INFO] product url:', link_each_product)
+            link_each_product_list.append(link_each_product)
+            loc_each_product = item_element.find_all('div', {'class': '_2CWevj'})[0].text.strip()
+            print('[INFO] store location:', loc_each_product)
+            store_location_list.append(loc_each_product)
+    
+    print('INFO] len(store_location_list):', len(store_location_list))
+    print('INFO] len(link_each_product_list):', len(link_each_product_list))
+    assert len(store_location_list) == len(link_each_product_list)
+
+    if len(link_each_product_list) >= defined_query['Num Search'] and len(store_location_list)  >= defined_query['Num Search']:
+        link_each_product_list = link_each_product_list[:defined_query['Num Search']]
+        store_location_list = store_location_list[:defined_query['Num Search']]
+    
+    for idx, link_item in enumerate(link_each_product_list):
+        print(f'[INFO] scraping {idx+1}/{len(link_each_product_list)} data ...')
+        driver.get(link_item)
+        time.sleep(3)
+        soup = BeautifulSoup(driver.page_source, "html.parser")
+        shopee_utilities = shopeeUtilities(soup)
+        product_name = shopee_utilities.get_product_name()
+        product_name_list.append(product_name)
+        product_rating = shopee_utilities.get_product_rating()
+        product_rating_list.append(product_rating)
+        product_num_review = shopee_utilities.get_product_num_review()
+        product_num_review_list.append(product_num_review)
+        product_num_sold = shopee_utilities.get_product_num_sold()
+        product_num_sold_list.append(product_num_sold)
+        product_price = shopee_utilities.get_product_price()
+        product_price_list.append(product_price)
+        product_spec = shopee_utilities.get_product_spec()
+        product_spec_list.append(product_spec)
+        product_category = shopee_utilities.get_product_category()
+        product_category_list.append(product_category)
+        product_image_link = shopee_utilities.get_product_images_link()
+        product_images_link_list.append(product_image_link)
+        store_name = shopee_utilities.get_store_name()
+        store_name_list.append(store_name)
+        store_response_duration = shopee_utilities.get_store_response_duration()
+        store_response_duration_list.append(store_response_duration)
+        store_follower = shopee_utilities.get_store_follower()
+        store_follower_list.append(store_follower)
+
+        driver.find_element_by_xpath('//div[@class="_34c6X6 page-product__shop"]/div[1]/a').click()
+        time.sleep(3)
+        print('[INFO] In store page ...')
+        store_rating = driver.find_element_by_xpath('//div[@class="shop-page__info"]/div/div[2]/div[5]/div[2]/div[2]').text
+        store_rating = float(store_rating.split(' ')[0])
+        store_rating_list.append(store_rating)
 
     product_data = {
-        'name' : product_name, 
-        'price' : product_price,
-        'location' : product_location,
-        'merchant' : product_merchant, 
-        'link' : product_link,
-        }
+        'Product name':product_name_list,'Product price':product_price_list,'Product rating':product_rating_list,
+        'Product review/s':product_num_review_list, 'Product sold':product_num_sold_list,'Product category':product_category_list,
+        'Product picture':product_images_link_list,'Product specsification':product_spec_list,'Product Link':link_each_product_list,
+        'Store Name':store_name_list,'Store Location':store_location_list,'Store rating':store_rating_list,
+        'Store process duration':store_response_duration_list,'Store follower':store_follower_list
+    }
     result = pd.DataFrame.from_dict(product_data)
-    print()
-
     return result
 
 def _tokopedia_handler(driver, **query):

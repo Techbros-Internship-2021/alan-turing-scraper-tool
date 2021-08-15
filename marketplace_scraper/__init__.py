@@ -4,7 +4,10 @@
 # Proprietary and confidential.
 #
 # Written by:
-# - Your Name <your email>
+# - Okta Fajar Suryani <okta.suryani@techbros.io>
+# - Daffa Barin <daffabarin@gmail.com>
+# - Ridhwan Nashir <ridhwanashir@gmail.com>
+# - Jonas <guterres19dedeus@gmail.com>
 # =========================================================================
 
 from marketplace_scraper.scrapper import *

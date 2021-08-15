@@ -4,8 +4,12 @@
 # Proprietary and confidential.
 #
 # Written by:
-# - Your Name <your email>
+# - Okta Fajar Suryani <okta.suryani@techbros.io>
+# - Daffa Barin <daffabarin@gmail.com>
+# - Ridhwan Nashir <ridhwanashir@gmail.com>
+# - Jonas <guterres19dedeus@gmail.com>
 # =========================================================================
+
 
 from marketplace_scraper.scrapper.scrapper import Scrapper, Vendor
 
@@ -16,8 +20,8 @@ MARKETPLACE_SHOPEE = Vendor.SHOPEE
 MARKETPLACE_BUKALAPAK = Vendor.BUKALAPAK
 
 
-__all__ = [Scrapper,
-           MARKETPLACE_BLIBLI,
-           MARKETPLACE_TOKOPEDIA,
-           MARKETPLACE_SHOPEE,
-           MARKETPLACE_BUKALAPAK]
+__all__ = ['Scrapper',
+           'MARKETPLACE_BLIBLI',
+           'MARKETPLACE_TOKOPEDIA',
+           'MARKETPLACE_SHOPEE',
+           'MARKETPLACE_BUKALAPAK']

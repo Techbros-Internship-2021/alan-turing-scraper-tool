@@ -4,10 +4,14 @@
 # Proprietary and confidential.
 #
 # Written by:
-# - Your Name <your email>
+# - Okta Fajar Suryani <okta.suryani@techbros.io>
+# - Daffa Barin <daffabarin@gmail.com>
+# - Ridhwan Nashir <ridhwanashir@gmail.com>
+# - Jonas <guterres19dedeus@gmail.com>
 # =========================================================================
 
-from marketplace_scraper.scrapper.handler import *
+
+from marketplace_scraper.scrapper.handler import _shopee_handler, _blibli_handler, _bukalapak_handler, _tokopedia_handler
 from marketplace_scraper.scrapper.driver import _get_driver
 
 
@@ -20,12 +24,12 @@ class Scrapper(object):
 
     def crawl(self, vendor, **query):
         if vendor == Vendor.BLIBLI:
-            return _blibli_handler(self.driver, **query)
+            return _blibli_handler(self._driver, **query)
         elif vendor == Vendor.TOKOPEDIA:
-            return _tokopedia_handler(self.driver, **query)
+            return _tokopedia_handler(self._driver, **query)
         elif vendor == Vendor.SHOPEE:
-            return _shopee_handler(self.driver, **query)
+            return _shopee_handler(self._driver, **query)
         elif vendor == Vendor.BUKALAPAK:
-            return _bukalapak_handler(self.driver, **query)
+            return _bukalapak_handler(self._driver, **query)
         else:
             TypeError("Unknown Vendor")

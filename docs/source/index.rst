@@ -1,13 +1,13 @@
-Welcome to SIPLah Analytics' documentation!
-===========================================
+Welcome to Turing Marketplace Scraper's documentation!
+=======================================================
 
-SIPLah Analytics is Data Analytics Platform for `SIPLah Kemendikbud Project <https://siplah.kemdikbud.go.id/>`_.
+Turing Marketplace Scraper is Data Analytics Platform for some Famous Indonesian Marketplace.
 
 
 Overview
 ========
 
-SIPLah Analytics offers multiple features for data analytics tasks related to SIPLah Kemendikbud necessity.
+Turing Marketplace Scraper offers multiple features for data scraper and analytics tasks related to indonesian marketplace necessity.
 
 .. toctree::
    :maxdepth: 2

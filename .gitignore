@@ -1,0 +1,6 @@
+# developer environments
+.vscode
+
+# By-product file
+__pycache__
+*.log

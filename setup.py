@@ -1,3 +1,15 @@
+# Copyright 2021 Techbros GmbH. All Rights Reserved.
+# 
+# Unauthorized copying of this file, via any medium is strictly prohibited.
+# Proprietary and confidential.
+#
+# Written by:
+# - Okta Fajar Suryani <okta.suryani@techbros.io>
+# - Daffa Barin <daffabarin@gmail.com>
+# - Ridhwan Nashir <ridhwanashir@gmail.com>
+# - Jonas <guterres19dedeus@gmail.com>
+# =========================================================================
+
 from setuptools import setup
 from setuptools import find_packages
 
@@ -10,14 +22,14 @@ HERE = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(HERE, "README.md")) as fid:
     README = fid.read()
 
-setup(name='your project name',
+setup(name='marketplace-scraper',
       version='0.0.1',
-      description='your project description',
+      description='Scraper tool for some popular indonesian marketplaces',
       long_description=README,
       long_description_content_type="text/markdown",
-      author='Techbros GmbH',
-      author_email='youremail',
-      url='your project repo url',
+      author='Okta, Daffa, Ridwan, Jonas',
+      author_email='okta.suryani@techbros.io, daffabarin@gmail.com, ridhwanashir@gmail.com, guterres19dedeus@gmail.com',
+      url='https://github.com/Techbros-Internship-2021/alan-turing-scraper-tool',
       license='Proprietary',
       classifiers=[
           "Development Status :: 3 - Alpha",
