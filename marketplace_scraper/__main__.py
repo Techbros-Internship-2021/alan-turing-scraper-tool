@@ -25,8 +25,8 @@ app = typer.Typer()
 
 
 @app.command()
-def scrapper(output: str, query: str):
-    with open(query, "r") as read_file:
+def scrapper(output: str, query_data: str):
+    with open(query_data, "r") as read_file:
         query = json.load(read_file)
 
     scr = Scrapper()
