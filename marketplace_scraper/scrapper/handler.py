@@ -29,12 +29,23 @@ def _blibli_handler(driver, **query):
 def _bukalapak_handler(driver, **query):
 
     # your scraping process
-    url = "https://www.bukalapak.com/products?search%5Bkeywords%5D={}".format(query['product'])
-    driver.get(url)
-    time.sleep(2)
+    # url = "https://www.bukalapak.com/products?search%5Bkeywords%5D={}".format(query['product'])
+    # driver.get(url)
+    # time.sleep(2)
 
-    #scrolling through the website
+    defined_query = query
+    link_factory = linkFactory(defined_query)
+    print('[INFO] creating url from user query ...')
+    url_ref = link_factory._bukalapak_link_factory()
+    print('[INFO] url_ref:', url_ref)
+    driver.get(f'{url_ref}')
     scrolling(driver)
+
+    print('[INFO] In search page ...')
+    time.sleep(3)
+    # soup = BeautifulSoup(driver.page_source, "html.parser")
+    #scrolling through the website
+    # scrolling(driver)
 
     soup = BeautifulSoup(driver.page_source, "html.parser")
     data = soup.find_all('div',{'class':'bl-product-card te-product-card'})
