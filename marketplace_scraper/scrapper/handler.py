@@ -286,7 +286,7 @@ def _tokopedia_handler(driver, **query):
         datum = {
                     'Product name':productName,'Product price':productPrice,'Product rating':productRating,
                     'Product review/s':productNumReview, 'Product sold':productNumSold,'Product category':productCategory,
-                    'Product picture':productPicture,'Product specification':productSpecs,'Product Link':"linklinklink",
+                    'Product picture':productPicture,'Product specification':productSpecs,'Product Link':link,
                     'Store Name':storeName,'Store Location':storeLocation,'Store rating':storeRating,'Store Response duration':storeResponseDuration,
                     'Store Followers':storeFollowers,'Store Link':storeLink
                 }
