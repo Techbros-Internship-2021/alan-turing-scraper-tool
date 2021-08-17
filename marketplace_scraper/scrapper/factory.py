@@ -92,6 +92,9 @@ class linkFactory:
                     normal_search += f'&sortBy=ctime'
 
         return normal_search
+    def _tokopedia_link_factory(self):
+        return self.query
+
 
 
 class shopeeUtilities:

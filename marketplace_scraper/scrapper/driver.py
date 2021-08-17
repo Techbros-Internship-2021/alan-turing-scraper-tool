@@ -26,7 +26,6 @@ def _get_chrome_option():
 
 
 def _get_driver():
-    # driver = webdriver.Chrome('chromedriver', options=_get_chrome_option())
-    driver = webdriver.Chrome()
+    driver = webdriver.Chrome(executable_path="chromedriver.exe", options=_get_chrome_option())
     return driver
 

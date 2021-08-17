@@ -228,9 +228,13 @@ def _shopee_handler(driver,  **query):
     return result
 
 def _tokopedia_handler(driver, **query):
+    defined_query = query
+    link_factory = linkFactory(defined_query)
+    print('[INFO] creating url from user query ...')
     #get query from front-end
-    url = "https://www.tokopedia.com/search?st=product&q={}".format(query['product'])
-    driver.get(url)
+    url_ref = link_factory._tokopedia_link_factory()
+    print('[INFO] url_ref:', url_ref)
+    driver.get(url_ref)
     time.sleep(2)
     
     #scrolling through the website
