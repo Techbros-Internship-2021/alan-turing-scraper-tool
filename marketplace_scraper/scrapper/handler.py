@@ -235,20 +235,26 @@ def _tokopedia_handler(driver, **query):
     url_ref = link_factory._tokopedia_link_factory()
     print('[INFO] url_ref:', url_ref)
     driver.get(url_ref)
-    time.sleep(2)
-    
+    print('[INFO] In search page ...')
+    time.sleep(3)
     #scrolling through the website
     scrolling(driver)
 
     soup = BeautifulSoup(driver.page_source, "html.parser")
     data = soup.find_all('div',{'class':'css-7fmtuv'})
     productsLinks = []
+    
     for element in data:
         productsLinks.append(element.a.get('href'))
     productsLinks = [x for x in productsLinks if not x.startswith("https://ta.tokopedia.com/")]
+    print(productsLinks)
+
+    if len(productsLinks) >= defined_query['Num Search']:
+        productsLinks = productsLinks[:defined_query['Num Search']]
 
     result = []
-    for link in tqdm(productsLinks[:10]):
+    
+    for link in tqdm(productsLinks):
         driver.get(link)
         time.sleep(1)
         scrolling(driver)
@@ -257,16 +263,16 @@ def _tokopedia_handler(driver, **query):
         # Product
         productName = soup.find("h1", class_ = "css-1wtrxts").text
         productRating = soup.find_all("span", class_ = "main")[1].text
-        productNumReview = int(soup.find("span", attrs={"data-testid":"lblPDPDetailProductRatingCounter"}).text[1:3]) if soup.find("span", attrs={"data-testid":"lblPDPDetailProductRatingCounter"}) else 0
-        productNumSold = int(soup.find("div", attrs={"data-testid":"lblPDPDetailProductSoldCounter"}).text.replace("Terjual ",'')) if soup.find("div", attrs={"data-testid":"lblPDPDetailProductSoldCounter"}) else 0
-        productPrice = int(soup.find("div", class_ = "price").text.replace("Terjual ",'')[2:].replace('.','')) if soup.find("div",class_ = "price") else 0
+        productNumReview = (soup.find("span", attrs={"data-testid":"lblPDPDetailProductRatingCounter"}).text[1:3]) if soup.find("span", attrs={"data-testid":"lblPDPDetailProductRatingCounter"}) else 0
+        productNumSold = (soup.find("div", attrs={"data-testid":"lblPDPDetailProductSoldCounter"}).text.replace("Terjual ",'')) if soup.find("div", attrs={"data-testid":"lblPDPDetailProductSoldCounter"}) else 0
+        productPrice = (soup.find("div", class_ = "price").text.replace("Terjual ",'')[2:].replace('.','')) if soup.find("div",class_ = "price") else 0
         productCategory = soup.find("ul", class_ = "css-1ijyj3z e1iszlzh2").find_all("li",class_ ="css-1dmo88g")[2].text[10:] if soup.find("ul", class_ = "css-1ijyj3z e1iszlzh2") else soup.find_all("li", class_ ="css-1dmo88g")[3].text[10:]
         productSpecs = soup.find("span", class_ = "css-17zm3l e1iszlzh1").text
         productPicture = soup.find("div", class_ = "css-19i5z4j").img.get('src')
 
         # Store
         storeName = soup.find("a", class_ = "css-1n8curp").text
-        storeRating = float(soup.find("div", class_ = "css-1rktnzx").text.replace("rata-rata ulasan","")) if soup.find("div", class_ = "css-1rktnzx") else 0
+        storeRating = (soup.find("div", class_ = "css-1rktnzx").text.replace("rata-rata ulasan","")) if soup.find("div", class_ = "css-1rktnzx") else 0
         #go to store page
         storeLink = "https://tokopedia.com{}".format(soup.find("a", class_ = "css-1n8curp").get("href"))
         driver.get(storeLink)
@@ -285,4 +291,5 @@ def _tokopedia_handler(driver, **query):
                     'Store Followers':storeFollowers,'Store Link':storeLink
                 }
         result.append(datum)
-    return result
+    
+    return pd.DataFrame.from_dict(result)

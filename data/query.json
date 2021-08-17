@@ -1,5 +1,5 @@
 {
-    "Product Name": "Celana Pria",
+    "Product Name": "Celana Pria ",
     "Location": [
         "Jabodetabek", 
         "DKI Jakarta", 
@@ -10,6 +10,5 @@
     "Order": "Ascending", 
     "Rating": 5,
     "Relevance": true,
-    "Latest": true,
     "Num Search": 20
 }
