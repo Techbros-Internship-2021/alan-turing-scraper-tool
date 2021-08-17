@@ -1,15 +1,31 @@
+// {
+//     "Product Name": "Celana Pria",
+//     "Location": [
+//         "Jabodetabek", 
+//         "DKI Jakarta", 
+//         "Jawa Barat", 
+//         "Jawa Timur"
+//         ],
+//     "Official Store": true,
+//     "Order": "Ascending", 
+//     "Rating": 5,
+//     "Relevance": true,
+//     "Latest": true,
+//     "Num Search": 20
+// }
 {
     "Product Name": "Celana Pria",
-    "Location": [
-        "Jabodetabek", 
-        "DKI Jakarta", 
-        "Jawa Barat", 
-        "Jawa Timur"
-        ],
+    "City": [
+        "Bandung", 
+        "Yogyakarta"
+    ],
+    "Province": false,
     "Official Store": true,
     "Order": "Ascending", 
     "Rating": 5,
     "Relevance": true,
     "Latest": true,
+    "Expensive": true,
+    "Cheap": true,
     "Num Search": 20
 }
