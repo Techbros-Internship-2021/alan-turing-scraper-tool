@@ -7,7 +7,7 @@
 # - Okta Fajar Suryani <okta.suryani@techbros.io>
 # - Daffa Barin <daffabarin@gmail.com>
 # - Ridhwan Nashir <ridhwanashir@gmail.com>
-# - Jonas <guterres19dedeus@gmail.com>
+# - Jonas de Deus Guterres <guterres19dedeus@gmail.com>
 # =========================================================================
 
 import time
