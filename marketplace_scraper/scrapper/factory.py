@@ -228,3 +228,30 @@ class shopeeUtilities:
         store_follower_div = self.soup.find_all('span',{'class':'zw2E3N'})
         store_follower = store_follower_div[5].text.strip() if len(store_follower_div) > 0 else None
         return store_follower
+
+class blibliUtilities:
+    def __init__(self, driver):
+        # soup: html elements from product page
+        self.driver = driver
+
+    def get_allproduct(driver):
+        listLinkofproduct = []
+        Product_info_list = driver.find_elements_by_class_name('product__item')
+        for findlink in Product_info_list:
+            a = findlink.find_element_by_tag_name('a')
+            listLinkofproduct.append(a.get_property('href'))
+        return listLinkofproduct
+    
+    def get_spec(driver):
+        prod_specs = driver.find_elements_by_xpath('//div[@class="product-features"]/div/ul/li')
+        spec = []
+        for sp in prod_specs:
+            spec.append(sp.text)
+        return spec
+
+    def get_picture(driver):
+        picture = driver.find_element_by_xpath('//div[@class="thumbnail-area"]')
+        text = picture.get_attribute('style')
+        link_regex = re.compile("((https?):((//)|(\\\\))+([\w\d:#@%/;$()~_?\+-=\\\.&](#!)?)*)", re.DOTALL)
+        link = re.findall(link_regex, text)
+        return link[0][0]
