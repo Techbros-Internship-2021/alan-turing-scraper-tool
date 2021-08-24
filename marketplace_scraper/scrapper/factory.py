@@ -93,45 +93,6 @@ class linkFactory:
 
         return normal_search
 
-    def _blibli_link_factory(self):
-        
-        normal_search = f'https://www.blibli.com/cari/'
-
-        if self.query['Product Name']:
-            product_name = self.query['Product Name'].split(' ')
-            for i in range (len(product_name)):
-                normal_search += product_name[i].lower()
-                if i != len(product_name)-1:
-                    normal_search += '%20'
-
-        if self.query['Rating']:
-            _rating = self.query['Rating']
-            normal_search += f'?rating={_rating}'
-    # Choose 1 filter
-        if self.query['Order'] == 'Ascending':
-            normal_search += f'&sort=3'
-        elif self.query['Order'] == 'Descending':
-            normal_search += f'&sort=4'
-        elif self.query['Relevance']:
-            normal_search += f'&sort=0'
-        elif self.query['Latest']:
-            normal_search += f'&sort=1'
-
-        if self.query['Official Store']:
-            normal_search += f'&seller=Official%20Store'
-        
-        if self.query['Location']:
-            location = self.query['Location']
-            for i in range(len(location)):
-                normal_search +=  '&location='
-                loc = location[i]
-                splittedloc = loc.split()
-                for j in range(len(splittedloc)):
-                    normal_search +=  splittedloc[j]
-                    if j != len(splittedloc)-1:
-                        normal_search +=  '%20'
-        
-        return normal_search
 
 class shopeeUtilities:
     def __init__(self, soup):
