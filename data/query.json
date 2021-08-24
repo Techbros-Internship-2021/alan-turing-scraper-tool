@@ -1,11 +1,9 @@
 {
     "Product Name": "Celana Pria",
     "Location": [
-        "Jabodetabek", 
-        "DKI Jakarta", 
-        "Jawa Barat", 
-        "Jawa Timur"
-        ],
+        "Bandung", 
+        "Yogyakarta"
+    ],
     "Official Store": true,
     "Order": "Ascending", 
     "Rating": 5,

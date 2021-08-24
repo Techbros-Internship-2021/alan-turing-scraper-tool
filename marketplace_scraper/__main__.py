@@ -7,7 +7,7 @@
 # - Okta Fajar Suryani <okta.suryani@techbros.io>
 # - Daffa Barin <daffabarin@gmail.com>
 # - Ridhwan Nashir <ridhwanashir@gmail.com>
-#- Jonas <guterres19dedeus@gmail.com>
+# - Jonas de Deus Guterres <guterres19dedeus@gmail.com>
 # =========================================================================
 
 import typer
@@ -32,11 +32,11 @@ def scrapper(output: str, query_data: str):
     scr = Scrapper()
     # blibli_data = scr.crawl(mks.MARKETPLACE_BLIBLI, **query)
     # tokopedia_data = scr.crawl(mks.MARKETPLACE_TOKOPEDIA, **query)
-    shopee_data = scr.crawl(mks.MARKETPLACE_SHOPEE, **query)
-    # bukalapak_data = scr.crawl(mks.MARKETPLACE_BUKALAPAK, **query)
+    # shopee_data = scr.crawl(mks.MARKETPLACE_SHOPEE, **query)
+    bukalapak_data = scr.crawl(mks.MARKETPLACE_BUKALAPAK, **query)
 
     # all_data = [blibli_data, tokopedia_data, shopee_data, bukalapak_data]
-    all_data = shopee_data
+    all_data = bukalapak_data
     # all_data = pd.concat(all_data)
     all_data.to_csv(output, index=False)
     print("File is saved in: {}".format(output))

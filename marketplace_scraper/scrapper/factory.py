@@ -7,7 +7,7 @@
 # - Okta Fajar Suryani <okta.suryani@techbros.io>
 # - Daffa Barin <daffabarin@gmail.com>
 # - Ridhwan Nashir <ridhwanashir@gmail.com>
-# - Jonas <guterres19dedeus@gmail.com>
+# - Jonas de Deus Guterres <guterres19dedeus@gmail.com>
 # =========================================================================
 
 import re
@@ -92,7 +92,47 @@ class linkFactory:
                     normal_search += f'&sortBy=ctime'
 
         return normal_search
+    
+    def _bukalapak_link_factory(self):
 
+        def _check_double_name(arr_element):
+            name = arr_element.split(' ')
+            link = f'{name[0].capitalize()}'
+            if len(name) > 1:
+                for x in name[1:]:
+                    _link = f'%20{x.capitalize()}'
+                    link += _link
+            return link
+        
+        normal_search = f'https://www.bukalapak.com/products?search%5Bkeywords%5D='
+
+        if self.query['Product Name']:
+            product_link = _check_double_name(self.query['Product Name'])
+            normal_search += product_link
+        
+        if self.query['Location']:
+            location_list = self.query['Location']
+            for location in location_list:
+                location_link = f'&search%5Bcities%5D[]='
+                location_link += _check_double_name(location)
+                normal_search += location_link
+
+        if self.query['Official Store']:
+            normal_search += f'&search%5Btop_seller%5D=1'
+        
+        if self.query['Rating']:
+            normal_search += f'&search%5Brating_gte%5D=4'
+        
+        if self.query['Latest']:
+            normal_search += f'&search%5Bsort_by%5D=last_relist_at%3Adesc'
+        else:
+            if self.query['Cheap']:
+                normal_search += f'&search%5Bsort_by%5D=price%3Aasc'
+            else:
+                if self.query['Expensive']:
+                    normal_search += f'&search%5Bsort_by%5D=price%3Adesc'
+
+        return normal_search
 
 class shopeeUtilities:
     def __init__(self, soup):
