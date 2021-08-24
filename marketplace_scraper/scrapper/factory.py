@@ -110,17 +110,12 @@ class linkFactory:
             product_link = _check_double_name(self.query['Product Name'])
             normal_search += product_link
         
-        if self.query['Province']:
-            location_link = f'&search%5Bprovince%5D='
-            location_link += _check_double_name(self.query['Province'])
-            normal_search += location_link
-        else:
-            if self.query['City']:
-                location_list = self.query['City']
-                for location in location_list:
-                    location_link = f'&search%5Bcities%5D[]='
-                    location_link += _check_double_name(location)
-                    normal_search += location_link
+        if self.query['Location']:
+            location_list = self.query['Location']
+            for location in location_list:
+                location_link = f'&search%5Bcities%5D[]='
+                location_link += _check_double_name(location)
+                normal_search += location_link
 
         if self.query['Official Store']:
             normal_search += f'&search%5Btop_seller%5D=1'

@@ -1,16 +1,13 @@
 {
     "Product Name": "Celana Pria",
-    "City": [
+    "Location": [
         "Bandung", 
         "Yogyakarta"
     ],
-    "Province": false,
     "Official Store": true,
     "Order": "Ascending", 
     "Rating": 5,
     "Relevance": true,
     "Latest": true,
-    "Expensive": true,
-    "Cheap": true,
     "Num Search": 20
 }
