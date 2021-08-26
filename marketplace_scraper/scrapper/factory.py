@@ -118,7 +118,21 @@ class linkFactory:
                 normal_search += "165%2C148%2C149%2C150%2C151%2C152%2C153%2C154%2C155%2C156%2C157%2C158%2C159%2C160%2C161%2C162%2C163%2C164%2C473%2C166%2C167%2C168%2C169%2C170%2C171%2C172%2C173%23"
             if "Jawa Timur" in self.query['Location']:
                 normal_search += "252%2C215%2C216%2C217%2C218%2C219%2C220%2C221%2C222%2C223%2C224%2C225%2C226%2C227%2C228%2C229%2C230%2C231%2C232%2C233%2C234%2C235%2C236%2C237%2C238%2C239%2C240%2C241%2C242%2C243%2C244%2C245%2C246%2C247%2C248%2C249%2C250%2C251%23"
-
+            if "Yogyakarta" in self.query['Location']:
+                normal_search += "257%23"
+            if "Bogor" in self.query['Location']:
+                normal_search += "168%23"
+            if "Depok" in self.query['Location']:
+                normal_search += "171%23"
+            if "Tangerang" in self.query['Location']:
+                normal_search += "146%23"
+            if "Bekasi" in self.query['Location']:
+                normal_search += "167%23" 
+            if "Bandung" in self.query['Location']:
+                normal_search += "165%23" 
+            if "Surabaya" in self.query['Location']:
+                normal_search += "252%23"
+            
         return normal_search
 
 
