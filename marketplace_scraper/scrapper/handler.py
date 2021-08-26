@@ -23,7 +23,34 @@ def scrolling(driver):
         time.sleep(1)
     time.sleep(2)
     
-def _blibli_handler(driver, **query):
+def _blibli_handler_searchpage(driver, **query):
+
+    blibli_utilities = blibliUtilities(driver) # initiate blibli utilities class
+    defined_query = query
+    link_factory = linkFactory(defined_query)
+    print('[INFO] creating url from user query ...')
+    url_ref = link_factory._blibli_link_factory()
+    print('[INFO] url_ref:', url_ref)
+    driver.get(f'{url_ref}')
+    print('[INFO] In search page ...')
+    
+    # waiting for element to appear
+    WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, '//div[@class="product__item"]')))
+    Product_info_list = driver.find_elements_by_class_name('product__item')
+    # start scraping data using blibliutilities
+    productslink = blibli_utilities.get_linkproduct(driver,Product_info_list)
+    print("[INFO] recorded product num: {}".format(len(productslink)))
+    productsname = blibli_utilities.get_nameproduct(driver,Product_info_list)
+    productsrating = blibli_utilities.get_ratingproduct(driver,Product_info_list)
+    productssold = blibli_utilities.get_soldproduct(driver,Product_info_list)
+    productsprice = blibli_utilities.get_priceproduct(driver,Product_info_list)
+    productslocation = blibli_utilities.get_locationproduct(driver,Product_info_list)
+
+    result = pd.DataFrame(zip(productsname,productsrating,productssold,productsprice,productslocation,productslink),
+            columns= ["Name", "Rating", "Sold", "Price", "Location", "Link"])    
+    return result
+
+def _blibli_handler_detailed(driver, **query):
     DataProduct = []
     blibli_utilities = blibliUtilities(driver) # initiate blibli utilities class
     defined_query = query
@@ -37,8 +64,9 @@ def _blibli_handler(driver, **query):
     
     # waiting for element to appear
     WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, '//div[@class="product__item"]')))
+    Product_info_list = driver.find_elements_by_class_name('product__item')
     # saving each product
-    productslink = blibli_utilities.get_allproduct(driver)
+    productslink = blibli_utilities.get_linkproduct(driver,Product_info_list)
     print("[INFO] recorded product num: {}".format(len(productslink)))
 
     # start scraping

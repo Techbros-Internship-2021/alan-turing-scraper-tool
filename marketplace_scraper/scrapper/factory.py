@@ -234,13 +234,47 @@ class blibliUtilities:
         # soup: html elements from product page
         self.driver = driver
 
-    def get_allproduct(driver):
+    def get_linkproduct(driver, items):
         listLinkofproduct = []
-        Product_info_list = driver.find_elements_by_class_name('product__item')
         for findlink in Product_info_list:
-            a = findlink.find_element_by_tag_name('a')
-            listLinkofproduct.append(a.get_property('href'))
+            link = findlink.find_element_by_tag_name('a')
+            listLinkofproduct.append(link.get_property('href'))
         return listLinkofproduct
+
+    def get_nameproduct(driver, items):
+        listNameofproduct = []
+        for findname in Product_info_list:
+            name = findname.find_element_by_xpath('//div[@class="product__content"]/div').text
+            listNameofproduct.append(name)
+        return listNameofproduct
+
+    def get_ratingproduct(driver, items):
+        listRatingofproduct = []
+        for findrating in Product_info_list:
+            rating = findrating.find_element_by_xpath('//span[@class="product__body__rating__stars__rating"]').text
+            listRatingofproduct.append(rating)
+        return listLinkofproduct
+
+    def get_soldproduct(driver, items):
+        listSoldofproduct = []
+        for findsold in Product_info_list:
+            sold = findsold.find_element_by_xpath('//span[@class="product__body__rating__sold__count"]').text
+            listSoldofproduct.append(sold)
+        return listSoldofproduct
+
+    def get_priceproduct(driver, items):
+        listPriceofproduct = []
+        for findprice in Product_info_list:
+            price = findprice.find_element_by_xpath('//strong[@class="product__body__price__display"]').text
+            listPriceofproduct.append(price)
+        return listPriceofproduct
+
+    def get_locationproduct(driver, items):
+        listLocationofproduct = []
+        for findlocation in Product_info_list:
+            location = findlocation.find_element_by_xpath('//span[@class="product__body__location__text"]').text
+            listLocationofproduct.append(location)
+        return listLocationofproduct
     
     def get_spec(driver):
         prod_specs = driver.find_elements_by_xpath('//div[@class="product-features"]/div/ul/li')
