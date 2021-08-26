@@ -228,57 +228,43 @@ def _shopee_handler(driver,  **query):
     return result
 
 def _tokopedia_handler(driver, **query):
+    defined_query = query
+    link_factory = linkFactory(defined_query)
+    print('[INFO] creating url from user query ...')
     #get query from front-end
-    url = "https://www.tokopedia.com/search?st=product&q={}".format(query['product'])
-    driver.get(url)
-    time.sleep(2)
-    
+    url_ref = link_factory._tokopedia_link_factory()
+    print('[INFO] url_ref:', url_ref)
+    driver.get(url_ref)
+    print('[INFO] In search page ...')
+    time.sleep(3)
     #scrolling through the website
     scrolling(driver)
-
     soup = BeautifulSoup(driver.page_source, "html.parser")
-    data = soup.find_all('div',{'class':'css-7fmtuv'})
-    productsLinks = []
-    for element in data:
-        productsLinks.append(element.a.get('href'))
-    productsLinks = [x for x in productsLinks if not x.startswith("https://ta.tokopedia.com/")]
-
+    scrolling(driver)
+    data = soup.find_all('div',{'class':'css-ilyl2x'})
     result = []
-    for link in tqdm(productsLinks[:10]):
-        driver.get(link)
-        time.sleep(1)
-        scrolling(driver)
-        soup = BeautifulSoup(driver.page_source, "html.parser")
-
-        # Product
-        productName = soup.find("h1", class_ = "css-1wtrxts").text
-        productRating = soup.find_all("span", class_ = "main")[1].text
-        productNumReview = int(soup.find("span", attrs={"data-testid":"lblPDPDetailProductRatingCounter"}).text[1:3]) if soup.find("span", attrs={"data-testid":"lblPDPDetailProductRatingCounter"}) else 0
-        productNumSold = int(soup.find("div", attrs={"data-testid":"lblPDPDetailProductSoldCounter"}).text.replace("Terjual ",'')) if soup.find("div", attrs={"data-testid":"lblPDPDetailProductSoldCounter"}) else 0
-        productPrice = int(soup.find("div", class_ = "price").text.replace("Terjual ",'')[2:].replace('.','')) if soup.find("div",class_ = "price") else 0
-        productCategory = soup.find("ul", class_ = "css-1ijyj3z e1iszlzh2").find_all("li",class_ ="css-1dmo88g")[2].text[10:] if soup.find("ul", class_ = "css-1ijyj3z e1iszlzh2") else soup.find_all("li", class_ ="css-1dmo88g")[3].text[10:]
-        productSpecs = soup.find("span", class_ = "css-17zm3l e1iszlzh1").text
-        productPicture = soup.find("div", class_ = "css-19i5z4j").img.get('src')
-
-        # Store
-        storeName = soup.find("a", class_ = "css-1n8curp").text
-        storeRating = float(soup.find("div", class_ = "css-1rktnzx").text.replace("rata-rata ulasan","")) if soup.find("div", class_ = "css-1rktnzx") else 0
-        #go to store page
-        storeLink = "https://tokopedia.com{}".format(soup.find("a", class_ = "css-1n8curp").get("href"))
-        driver.get(storeLink)
-        time.sleep(3)
-        soup = BeautifulSoup(driver.page_source, "html.parser")
-        time.sleep(1)
-        storeResponseDuration = soup.find("p", class_ = "css-larfgg-unf-heading-unf-heading e1qvo2ff8").text[10:]
-        storeLocation = soup.find_all("p", class_ = "css-larfgg-unf-heading-unf-heading e1qvo2ff8")[1].text
-        storeFollowers = soup.find("h6", class_ = "css-1xrfbuw-unf-heading-unf-heading e1qvo2ff6").text.replace(" Followers","")
-
+    for element in data:
+        if  element.a.get('href').startswith("https://ta.tokopedia.com/") == True:
+            continue
+        productName = element.find('div',class_="css-1f4mp12").text
+        productLink = element.a.get('href')
+        productPrice = element.find('div',class_="css-rhd610").text[2:]
+        productRating = element.find('span', class_="css-etd83i").text if element.find('span', class_="css-etd83i") else "0"
+        productSold = element.find('span',class_="css-1kgbcz0").text[8:] if element.find('span',class_="css-1kgbcz0") else "0"
+        if element.find('div',class_="css-1dpp4z9"):
+            productPicture = element.find('div',class_="css-1dpp4z9").img['src']
+        else :
+            continue
+        storeLocation = element.find('span',class_="css-qjiozs flip").text
         datum = {
-                    'Product name':productName,'Product price':productPrice,'Product rating':productRating,
-                    'Product review/s':productNumReview, 'Product sold':productNumSold,'Product category':productCategory,
-                    'Product picture':productPicture,'Product specification':productSpecs,'Product Link':"linklinklink",
-                    'Store Name':storeName,'Store Location':storeLocation,'Store rating':storeRating,'Store Response duration':storeResponseDuration,
-                    'Store Followers':storeFollowers,'Store Link':storeLink
-                }
+                'Product name':productName,'Product price':productPrice,'Product rating':productRating,
+                'Product sold':productSold,'Product picture':productPicture,'Product Link':productLink,
+                'Store Location':storeLocation
+            }
         result.append(datum)
-    return result
+        if len(result) > defined_query["Num Search"] :
+            break
+   
+        
+    
+    return pd.DataFrame.from_dict(result)
