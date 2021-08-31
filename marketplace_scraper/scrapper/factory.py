@@ -189,3 +189,71 @@ class shopeeUtilities:
         store_follower_div = self.soup.find_all('span',{'class':'zw2E3N'})
         store_follower = store_follower_div[5].text.strip() if len(store_follower_div) > 0 else None
         return store_follower
+
+class blibliUtilities:
+    def __init__(self, driver):
+        # soup: html elements from product page
+        self.driver = driver
+
+    def get_linkproduct(driver, items):
+        listLinkofproduct = []
+        for findlink in Product_info_list:
+            link = findlink.find_element_by_tag_name('a')
+            listLinkofproduct.append(link.get_property('href'))
+        return listLinkofproduct
+
+    def get_nameproduct(driver, items):
+        listNameofproduct = []
+        for findname in Product_info_list:
+            name = findname.find_element_by_xpath('//div[@class="product__content"]/div').text
+            listNameofproduct.append(name)
+        return listNameofproduct
+
+    def get_ratingproduct(driver, items):
+        listRatingofproduct = []
+        for findrating in Product_info_list:
+            rating = findrating.find_element_by_xpath('//span[@class="product__body__rating__stars__rating"]').text
+            listRatingofproduct.append(rating)
+        return listLinkofproduct
+
+    def get_soldproduct(driver, items):
+        listSoldofproduct = []
+        for findsold in Product_info_list:
+            sold = findsold.find_element_by_xpath('//span[@class="product__body__rating__sold__count"]').text
+            listSoldofproduct.append(sold)
+        return listSoldofproduct
+
+    def get_priceproduct(driver, items):
+        listPriceofproduct = []
+        for findprice in Product_info_list:
+            price = findprice.find_element_by_xpath('//strong[@class="product__body__price__display"]').text
+            listPriceofproduct.append(price)
+        return listPriceofproduct
+
+    def get_locationproduct(driver, items):
+        listLocationofproduct = []
+        for findlocation in Product_info_list:
+            location = findlocation.find_element_by_xpath('//span[@class="product__body__location__text"]').text
+            listLocationofproduct.append(location)
+        return listLocationofproduct
+
+    def get_picture_search(driver, items):
+        listPictureofproduct = []
+        for findpic in Product_info_list:
+            picture = findpic.find_element_by_xpath('//div[@class="product__itemImage product__image__grid-view"]/div/div/img').get_attribute("src")
+            listLocationofproduct.append(picture)
+        return listPictureofproduct
+    
+    def get_spec(driver):
+        prod_specs = driver.find_elements_by_xpath('//div[@class="product-features"]/div/ul/li')
+        spec = []
+        for sp in prod_specs:
+            spec.append(sp.text)
+        return spec
+
+    def get_picture_detail(driver):
+        picture = driver.find_element_by_xpath('//div[@class="thumbnail-area"]')
+        text = picture.get_attribute('style')
+        link_regex = re.compile("((https?):((//)|(\\\\))+([\w\d:#@%/;$()~_?\+-=\\\.&](#!)?)*)", re.DOTALL)
+        link = re.findall(link_regex, text)
+        return link[0][0]

@@ -23,8 +23,128 @@ def scrolling(driver):
         time.sleep(1)
     time.sleep(2)
     
-def _blibli_handler(driver, **query):
-    pass
+def _blibli_handler_searchpage(driver, **query):
+
+    blibli_utilities = blibliUtilities(driver) # initiate blibli utilities class
+    defined_query = query
+    link_factory = linkFactory(defined_query)
+    print('[INFO] creating url from user query ...')
+    url_ref = link_factory._blibli_link_factory()
+    print('[INFO] url_ref:', url_ref)
+    driver.get(f'{url_ref}')
+    print('[INFO] In search page ...')
+    
+    # waiting for element to appear
+    WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, '//div[@class="product__item"]')))
+    Product_info_list = driver.find_elements_by_class_name('product__item')
+    # start scraping data using blibliutilities
+    productslink = blibli_utilities.get_linkproduct(driver,Product_info_list)
+    print("[INFO] recorded product num: {}".format(len(productslink)))
+    productsname = blibli_utilities.get_nameproduct(driver,Product_info_list)
+    productsrating = blibli_utilities.get_ratingproduct(driver,Product_info_list)
+    productssold = blibli_utilities.get_soldproduct(driver,Product_info_list)
+    productsprice = blibli_utilities.get_priceproduct(driver,Product_info_list)
+    productslocation = blibli_utilities.get_locationproduct(driver,Product_info_list)
+    productspicture = blibli_utilities.get_picture_search(driver,Product_info_list)
+
+    result = pd.DataFrame(zip(productsname,productsrating,productssold,productsprice,productslocation,productslink,productspicture),
+            columns= ["Name", "Rating", "Sold", "Price", "Location", "Link", "Picture"])    
+    return result
+
+def _blibli_handler_detailed(driver, **query):
+    DataProduct = []
+    blibli_utilities = blibliUtilities(driver) # initiate blibli utilities class
+    defined_query = query
+    link_factory = linkFactory(defined_query)
+
+    print('[INFO] creating url from user query ...')
+    url_ref = link_factory._blibli_link_factory()
+    print('[INFO] url_ref:', url_ref)
+    driver.get(f'{url_ref}')
+    print('[INFO] In search page ...')
+    
+    # waiting for element to appear
+    WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, '//div[@class="product__item"]')))
+    Product_info_list = driver.find_elements_by_class_name('product__item')
+    # saving each product
+    productslink = blibli_utilities.get_linkproduct(driver,Product_info_list)
+    print("[INFO] recorded product num: {}".format(len(productslink)))
+
+    # start scraping
+    for link in tqdm(productslink):
+        driver.get(link)
+    #     initiate element with null
+        name = rating = review = sold = price = category = spec = picture = sname = sresponse = slocation = followers = srating = None
+        scrolling(driver)
+        # scrape from products
+        try:
+            name = driver.find_element_by_xpath('//div[@id="product-info"]/div[2]/div[1]').text
+        except NoSuchElementException:
+            pass
+        try:
+            rating = driver.find_element_by_xpath('//div[@class="review-summary__average"]/div[1]').text
+        except NoSuchElementException: 
+            pass
+        try:
+            review = driver.find_element_by_xpath('//*[@id="product-review"]/div[2]/div[1]/div[1]/div[1]/div[1]/span').text
+        except NoSuchElementException:  
+            pass
+        try:
+            sold = driver.find_element_by_xpath('//*[@id="product-info"]/div[2]/div[2]/span[2]').text
+        except NoSuchElementException:  #spelling error making this code not work as expected
+            pass
+        try:
+            price = driver.find_element_by_xpath('//*[@class="final-price"]/span').text
+        except NoSuchElementException: 
+            pass
+        try:
+            category = driver.find_element_by_xpath('//*[@class="category"]/a').text
+        except NoSuchElementException: 
+            pass
+        try:
+            spec = get_spec(driver)
+        except NoSuchElementException:  
+            pass
+        try:
+            picture = get_picture_detail(driver)
+        except NoSuchElementException: 
+            pass
+        try:
+            sname = driver.find_element_by_xpath('//div[@class="seller__name"]/a').text
+        except NoSuchElementException:  
+            pass
+        try:
+            sresponse = driver.find_element_by_xpath('//div[@class="seller-rating__active-response"]/div[1]/span').text
+        except NoSuchElementException:  
+            pass
+        try:
+            slocation = driver.find_element_by_xpath('//div[@class="seller-info__location"]/div[2]/span').text
+        except NoSuchElementException:  
+            pass
+        # scrape from shop (using clicks)
+        driver.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.HOME)
+        driver.find_element_by_xpath('//button[@class="ticker__close b-order-right"]').click() # close pop up
+        driver.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.HOME) # twice for load more element
+        driver.find_element_by_xpath('//div[@class="seller__name"]/a').click() 
+        WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, '//p[@class="followers-count"]')))
+        try:
+            followers = driver.find_element_by_xpath('//p[@class="followers-count"]').text
+        except NoSuchElementException:  
+            pass
+        try:
+            srating = driver.find_element_by_xpath('//span[@class="rating-merchant-value no-rating"]/div/span').text
+        except NoSuchElementException:  
+            pass
+        
+        listofitems = {
+            'Product name':name,'Product Rating':rating,'Total Review':review,
+            'Total Sold': sold,'Price':price,'Product Category':category,
+            'Product Specs':spec,'Product Picture':picture,'Store Name':sname,'Store Response Duration':sresponse, 
+            'Store Location':slocation,'Product Link': link,'Followers': followers,'Store Rating': srating
+        }
+        DataProduct.append(listofitems)
+    result = pd.DataFrame(DataProduct)
+    return result
 
 def _bukalapak_handler(driver, **query):
 
