@@ -275,6 +275,13 @@ class blibliUtilities:
             location = findlocation.find_element_by_xpath('//span[@class="product__body__location__text"]').text
             listLocationofproduct.append(location)
         return listLocationofproduct
+
+    def get_picture_search(driver, items):
+        listPictureofproduct = []
+        for findpic in Product_info_list:
+            picture = findpic.find_element_by_xpath('//div[@class="product__itemImage product__image__grid-view"]/div/div/img').get_attribute("src")
+            listLocationofproduct.append(picture)
+        return listPictureofproduct
     
     def get_spec(driver):
         prod_specs = driver.find_elements_by_xpath('//div[@class="product-features"]/div/ul/li')
@@ -283,7 +290,7 @@ class blibliUtilities:
             spec.append(sp.text)
         return spec
 
-    def get_picture(driver):
+    def get_picture_detail(driver):
         picture = driver.find_element_by_xpath('//div[@class="thumbnail-area"]')
         text = picture.get_attribute('style')
         link_regex = re.compile("((https?):((//)|(\\\\))+([\w\d:#@%/;$()~_?\+-=\\\.&](#!)?)*)", re.DOTALL)

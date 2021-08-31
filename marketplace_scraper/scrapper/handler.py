@@ -45,9 +45,10 @@ def _blibli_handler_searchpage(driver, **query):
     productssold = blibli_utilities.get_soldproduct(driver,Product_info_list)
     productsprice = blibli_utilities.get_priceproduct(driver,Product_info_list)
     productslocation = blibli_utilities.get_locationproduct(driver,Product_info_list)
+    productspicture = blibli_utilities.get_picture_search(driver,Product_info_list)
 
-    result = pd.DataFrame(zip(productsname,productsrating,productssold,productsprice,productslocation,productslink),
-            columns= ["Name", "Rating", "Sold", "Price", "Location", "Link"])    
+    result = pd.DataFrame(zip(productsname,productsrating,productssold,productsprice,productslocation,productslink,productspicture),
+            columns= ["Name", "Rating", "Sold", "Price", "Location", "Link", "Picture"])    
     return result
 
 def _blibli_handler_detailed(driver, **query):
@@ -105,7 +106,7 @@ def _blibli_handler_detailed(driver, **query):
         except NoSuchElementException:  
             pass
         try:
-            picture = get_picture(driver)
+            picture = get_picture_detail(driver)
         except NoSuchElementException: 
             pass
         try:
